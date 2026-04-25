@@ -1,3 +1,4 @@
+authorization_reference: ENG-2026-001
 authorized_targets:
   - example.com
   - localhost

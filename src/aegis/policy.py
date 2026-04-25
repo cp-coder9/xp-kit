@@ -23,6 +23,19 @@ def load_authorized_targets(path: str | Path) -> set[str]:
     return allowed
 
 
+def load_authorization_reference(path: str | Path) -> str:
+    """Read a required authorization reference line: authorization_reference: TICKET-1234."""
+    raw = Path(path).read_text().splitlines()
+    for line in raw:
+        stripped = line.strip()
+        if stripped.startswith("authorization_reference:"):
+            _, value = stripped.split(":", 1)
+            ref = value.strip()
+            if ref:
+                return ref
+    raise PolicyError("Missing `authorization_reference:` in scope file")
+
+
 def assert_target_authorized(target_url: str, allowed_hosts: set[str]) -> None:
     host = (urlparse(target_url).hostname or "").lower()
     if not host or host not in allowed_hosts:

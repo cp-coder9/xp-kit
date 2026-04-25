@@ -6,13 +6,14 @@ type ApiResponse = {
   cve?: { id: string; description: string };
   target?: { statusCode: number; tlsOk: boolean; findings: string[] };
   verdict?: string;
+  authorizationTicket?: string;
   error?: string;
 };
 
 export default function HomePage() {
   const [cveId, setCveId] = useState("CVE-2021-44228");
   const [targetUrl, setTargetUrl] = useState("https://example.com");
-  const [allowlistInput, setAllowlistInput] = useState("example.com\nlocalhost");
+  const [authorizationTicket, setAuthorizationTicket] = useState("ENG-2026-001");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ApiResponse | null>(null);
 
@@ -21,15 +22,10 @@ export default function HomePage() {
     setLoading(true);
     setResult(null);
 
-    const allowlist = allowlistInput
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
-
     const response = await fetch("/api/run", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cveId, targetUrl, allowlist })
+      body: JSON.stringify({ cveId, targetUrl, authorizationTicket })
     });
 
     const data = (await response.json()) as ApiResponse;
@@ -41,6 +37,10 @@ export default function HomePage() {
     <main className="container">
       <h1>Aegis Defensive Console</h1>
       <p>Authorized, real-world CVE verification with non-intrusive checks.</p>
+      <p>
+        Server-side allowlist enforcement is enabled through <code>AEGIS_AUTHORIZED_HOSTS</code>. Provide your engagement
+        authorization ticket below.
+      </p>
 
       <section className="panel">
         <form onSubmit={onSubmit}>
@@ -56,8 +56,8 @@ export default function HomePage() {
           </div>
 
           <div style={{ marginTop: "1rem" }}>
-            <label htmlFor="allowlist">Authorized Hosts (one hostname per line)</label>
-            <textarea id="allowlist" value={allowlistInput} onChange={(e) => setAllowlistInput(e.target.value)} required />
+            <label htmlFor="ticket">Authorization Ticket / Scope Reference</label>
+            <input id="ticket" value={authorizationTicket} onChange={(e) => setAuthorizationTicket(e.target.value)} required />
           </div>
 
           <button disabled={loading} type="submit">

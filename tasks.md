@@ -14,13 +14,14 @@
 ## Phase 3: Orchestration
 - [x] Implement orchestrator state progression (collector → researcher → validator → judge).
 - [x] Enforce ethical targeting policy via explicit hostname allowlist.
+- [x] Require authorization reference in scope definition.
 - [x] Build dark-themed CLI surface for operators.
 
 ## Phase 4: Frontend Console (Next.js)
 - [x] Create Next.js App Router project in `frontend/`.
-- [x] Build dark-themed operator dashboard with CVE/Target/Allowlist inputs.
+- [x] Build dark-themed operator dashboard with CVE/Target/Authorization inputs.
 - [x] Implement `/api/run` server route for real-time CVE + target checks.
-- [x] Return structured results and pass/fail verdict to the UI.
+- [x] Enforce server-side allowlist from `AEGIS_AUTHORIZED_HOSTS`.
 - [x] Add a dedicated `/preview` route with realistic UI mock plus `npm run preview` for production-like visual verification.
 
 ## Phase 5: Hardening & Operations

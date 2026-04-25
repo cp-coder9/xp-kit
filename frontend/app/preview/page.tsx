@@ -10,6 +10,7 @@ const sampleResult = {
     tlsOk: true,
     findings: []
   },
+  authorizationTicket: "ENG-2026-001",
   verdict: "Baseline defensive checks passed."
 };
 
@@ -32,8 +33,8 @@ export default function PreviewPage() {
         </div>
 
         <div style={{ marginTop: "1rem" }}>
-          <label>Authorized Hosts (one hostname per line)</label>
-          <textarea value={"example.com\nlocalhost"} readOnly />
+          <label>Authorization Ticket / Scope Reference</label>
+          <input value={"ENG-2026-001"} readOnly />
         </div>
 
         <button disabled type="button">
@@ -50,7 +51,7 @@ export default function PreviewPage() {
         <h2>Next Steps</h2>
         <ul>
           <li>Use this route to validate UI spacing and contrast quickly.</li>
-          <li>Use the live console for real checks against authorized targets.</li>
+          <li>Use the live console for real checks against authorized targets only.</li>
         </ul>
         <p style={{ marginTop: "1rem" }}>
           <Link href="/">Open Live Console</Link>

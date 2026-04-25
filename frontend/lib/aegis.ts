@@ -4,7 +4,7 @@ import tls from "node:tls";
 const requestSchema = z.object({
   cveId: z.string().regex(/^CVE-\d{4}-\d{4,}$/i),
   targetUrl: z.string().url(),
-  allowlist: z.array(z.string().min(1))
+  authorizationTicket: z.string().min(3)
 });
 
 export type AegisRequest = z.infer<typeof requestSchema>;
@@ -13,9 +13,23 @@ export function validateRequest(payload: unknown): AegisRequest {
   return requestSchema.parse(payload);
 }
 
+export function parseAuthorizedHostsFromEnv(): string[] {
+  const configured = process.env.AEGIS_AUTHORIZED_HOSTS ?? "";
+  const hosts = configured
+    .split(",")
+    .map((h) => h.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (hosts.length === 0) {
+    throw new Error("Server policy missing: set AEGIS_AUTHORIZED_HOSTS env variable.");
+  }
+
+  return hosts;
+}
+
 export function ensureAuthorized(targetUrl: string, allowlist: string[]) {
   const host = new URL(targetUrl).hostname.toLowerCase();
-  if (!allowlist.map((h) => h.toLowerCase()).includes(host)) {
+  if (!allowlist.includes(host)) {
     throw new Error(`Target host '${host}' is not authorized.`);
   }
 }
